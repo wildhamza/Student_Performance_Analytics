@@ -20,7 +20,7 @@ venv.bak/
 .DS_Store
 
 # Streamlit
-.streamlit/
+# .streamlit/
 
 # Jupyter Notebook
 .ipynb_checkpoints/

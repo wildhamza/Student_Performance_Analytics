@@ -28,7 +28,11 @@ def display_eda(df):
             
         st.markdown("""
         **Data Insight:** This section shows the distribution of students across performance levels. 
-        Most datasets have a 'Normal Distribution', but high 'Low' performer counts may indicate difficult coursework.
+        Most datasets have a 'Normal Distribution'. 
+        
+        **Outlier Removal Basis:** 
+        - **GPA:** Values outside the 2.0 to 4.0 range are removed as invalid.
+        - **Behavioral Habits:** Uses the Statistical IQR method (removes values far from the average).
         """)
 
     with tab2:

@@ -37,7 +37,15 @@ def preprocess_data(data):
     df = df.dropna()
     summary['removed_missing'] = before_missing - len(df)
     
-    # Outlier removal using IQR method
+    # 4. Outlier removal
+    # Basis: GPA is restricted to 2.0 - 4.0 range. Behavioral features use IQR.
+    before_outliers_total = len(df)
+    
+    # Specific GPA range filtering
+    if 'GPA-current/previous-semester' in df.columns:
+        df = df[(df['GPA-current/previous-semester'] >= 2.0) & (df['GPA-current/previous-semester'] <= 4.0)]
+    
+    # IQR method for behavioral features
     def remove_outliers_iqr(df_in, column):
         Q1 = df_in[column].quantile(0.25)
         Q3 = df_in[column].quantile(0.75)
@@ -46,11 +54,12 @@ def preprocess_data(data):
         upper_bound = Q3 + 1.5 * IQR
         return df_in[(df_in[column] >= lower_bound) & (df_in[column] <= upper_bound)]
     
-    before_outliers = len(df)
-    for col in OUTLIER_COLUMNS:
+    behavioral_cols = [c for c in OUTLIER_COLUMNS if c != 'GPA-current/previous-semester']
+    for col in behavioral_cols:
         if col in df.columns:
             df = remove_outliers_iqr(df, col)
-    summary['removed_outliers'] = before_outliers - len(df)
+            
+    summary['removed_outliers'] = before_outliers_total - len(df)
     
     summary['final_count'] = len(df)
     summary['total_removed'] = initial_count - len(df)
